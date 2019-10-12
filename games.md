@@ -1,6 +1,4 @@
----
-title: "Games"
----
+# Games
 
 ### Ludum Dare Entries
 
