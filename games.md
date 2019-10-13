@@ -11,7 +11,7 @@ The Ludum Dare is a 48 & 72 Hour game development competition where you set out 
 
 [LD38: The Grass is Always Greener](https://github.com/intxparts/TheGrassIsAlwaysGreener)
 
-<a href="https://github.com/intxparts/TheGrassIsAlwaysGreener"><img src="https://raw.githubusercontent.com/intxparts/TheGrassIsAlwaysGreener/master/Assets/image.png" height="48" width="48" ></a>
+<a href="https://github.com/intxparts/TheGrassIsAlwaysGreener"><img src="images/giag.png" height="48" width="48" ></a>
 
 - Theme: A Small World
 - Very short, 2D platformer, event driven story
@@ -21,7 +21,7 @@ The Ludum Dare is a 48 & 72 Hour game development competition where you set out 
 
 [LD36: The Collector](https://github.com/intxparts/ludumDare36)
 
-<a href="https://github.com/intxparts/ludumDare36"><img src="https://raw.githubusercontent.com/intxparts/ludumDare36/master/Assets/death.png"></a>
+<a href="https://github.com/intxparts/ludumDare36"><img src="images/collector.png"></a>
 
 - Theme: Ancient Technology
 - 2D top down, dungeon crawler, player v. environment, collect the artifacts
@@ -31,7 +31,7 @@ The Ludum Dare is a 48 & 72 Hour game development competition where you set out 
 
 [LD34: Wayward Souls](https://github.com/intxparts/wayward_souls)
 
-<a href="https://github.com/intxparts/wayward_souls"><img src="https://raw.githubusercontent.com/intxparts/wayward_souls/master/Game/Assets/waywardSouls_thumbnail.png" height="48" width="48" ></a>
+<a href="https://github.com/intxparts/wayward_souls"><img src="images/waywardSouls.png" height="48" width="48" ></a>
 
 - Theme: Growth
 - 2D platformer, event driven story
