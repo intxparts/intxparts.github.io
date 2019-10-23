@@ -29,17 +29,6 @@ Compilation results:
 ---
 
 
-### Useful learning Vim links
-
-*2017.08.23*
-
-- [Video: How to do 90% of what plugins do (with just Vim)](https://youtu.be/XA2WjJbmmoM)
-- [Game: Vim Adventures](https://vim-adventures.com)
-
-
----
-
-
 ### Building srlua on Windows
 
 *2017.09.19*
@@ -77,6 +66,17 @@ print('hello world!')
 
         [> glue.exe srlua.exe hello_world.lua hello_world.exe
 
+
+
+---
+
+
+### Useful learning Vim links
+
+*2017.08.23*
+
+- [Video: How to do 90% of what plugins do (with just Vim)](https://youtu.be/XA2WjJbmmoM)
+- [Game: Vim Adventures](https://vim-adventures.com)
 
 
 ---
