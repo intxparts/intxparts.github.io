@@ -48,7 +48,7 @@ One last problem to solve was ensuring that the test action would fail when a te
 	end
 ```
 
-By setting the exit code to non-zero, the CI picks this up and fails appropriately. At first I had tried to write to stderr, but the CI does not observe ouput to stderr as a failure.
+By setting the exit code to non-zero, the CI picks this up and fails appropriately. At first I had tried to write to stderr, but the CI does not observe output to stderr as a failure.
 
 Hence we land on the final CI config:
 
@@ -85,9 +85,9 @@ Unfortunately Github Actions does not ship with an 'intialize git submodules' ac
 One thing that I was really happy to see is that you can run CI for any OS, it just comes at a cost. Free accounts get 2,000 minutes of Github Actions running per month free. There is a multiplier if you want to use something other than Linux.
 
 Minute Multiplier
-Linux: 1
-Windows: 2
-MacOS: 10
+- Linux: 1
+- Windows: 2
+- MacOS: 10
 
 Cool software, I really enjoyed setting this up. It took me sometime to figure out this much (an hour or so), but that was mostly digging through Githubs documentation.
 

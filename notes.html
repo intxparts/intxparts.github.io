@@ -111,7 +111,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb4"><pre class="sourceCode Lua"><code class="sourceCode lua"><span id="cb4-1"><a href="#cb4-1"></a>    <span class="cf">if</span> has_errors <span class="cf">then</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>        <span class="fu">os.exit</span><span class="op">(</span><span class="kw">false</span><span class="op">)</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>    <span class="cf">end</span></span></code></pre></div>
-<p>By setting the exit code to non-zero, the CI picks this up and fails appropriately. At first I had tried to write to stderr, but the CI does not observe ouput to stderr as a failure.</p>
+<p>By setting the exit code to non-zero, the CI picks this up and fails appropriately. At first I had tried to write to stderr, but the CI does not observe output to stderr as a failure.</p>
 <p>Hence we land on the final CI config:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
@@ -138,7 +138,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Unfortunately Github Actions does not ship with an 'intialize git submodules' action at the time of writing this, but the community has several solutions for this. If possible I would like to avoid using external Github Actions if I can, just for simplicity and also for the control over the CI process. It is harder to optimize when you do not have control over parts of your system.</p>
 <p>One thing that I was really happy to see is that you can run CI for any OS, it just comes at a cost. Free accounts get 2,000 minutes of Github Actions running per month free. There is a multiplier if you want to use something other than Linux.</p>
-<p>Minute Multiplier Linux: 1 Windows: 2 MacOS: 10</p>
+<p>Minute Multiplier</p>
+<ul>
+<li>Linux: 1</li>
+<li>Windows: 2</li>
+<li>MacOS: 10</li>
+</ul>
 <p>Cool software, I really enjoyed setting this up. It took me sometime to figure out this much (an hour or so), but that was mostly digging through Githubs documentation.</p>
 <hr />
 <h3 id="c-cross-platform-casting">C++ Cross Platform Casting</h3>
