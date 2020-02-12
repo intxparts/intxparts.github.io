@@ -83,6 +83,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <h1 id="notes">Notes</h1>
 <hr />
+<h3 id="github-actions-speed-up">Github Actions [speed up]</h3>
+<p><em>2020.02.11</em></p>
+<p>Last weekend I got the urge to optimize the build for the <a href="https://github.com/intxparts/LuaModules">LuaModules</a> repo. The idea was to remove the dependency on the Github action 'download and build Lua' as this took a lot of time (~50 seconds). I ended up building the desired Lua version on each supported platform and added the binaries directly in the repo.</p>
+<p>Getting the binary solution working took a bit more effort than expected. The build immediately failed after switching due to a missing dependency. The version of Lua I had compiled on Linux was 5.3.4, but when I had compiled it, it was dependent on libreadline6. This dependency no longer exists on the Github containers. I'm not sure why it was removed, but it was a simple fix to recompile with libreadline7.</p>
+<p>Once that issue was resolved, everything worked smoothly. Since Lua's binaries are so small, the step 'checkout repo' only took a few milliseconds longer. By removing the 'download and build Lua' Github action, that eliminated ~50s from the build time. Now it only takes 3 seconds to run the entire build. The original build was taking ~53 seconds.</p>
+<p>With the build times now much more reasonable I decided to add Windows as an additional OS to run the build on. Setting this up was simple enough, by creating a <em>strategy</em> matrix. Since we're using the Lua binaries in the repo, we have two separate paths for each OS. This is something to account for in the *.yml file.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">on</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">push</span><span class="kw">]</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="at">  </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ${{ matrix.os }}</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="at">    </span><span class="fu">strategy</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="at">      </span><span class="fu">matrix</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="at">        </span><span class="fu">os</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">ubuntu-latest</span><span class="kw">,</span><span class="at"> windows-latest</span><span class="kw">]</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="at">        </span><span class="fu">include</span><span class="kw">:</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">os</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="at">          </span><span class="fu">LUA_BIN_PATH</span><span class="kw">:</span><span class="at"> ./bin/Linux/lua-5.3.5/</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">os</span><span class="kw">:</span><span class="at"> windows-latest</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="at">          </span><span class="fu">LUA_BIN_PATH</span><span class="kw">:</span><span class="at"> .\bin\Windows\lua-5.3.4\</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="at">    </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="at">      </span><span class="fu">LUA_PATH</span><span class="kw">:</span><span class="at"> ./src/?.lua</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v1</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run tests</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> ${{matrix.LUA_BIN_PATH}}lua ./src/utest_runner.lua -d ./tests -et efail</span></span></code></pre></div>
+<p>Naturally the Windows build takes a bit more time to run than Linux with checking out taking 5 seconds instead of 1. One thing that was unusual is the 'run tests' step takes 11 seconds. This is something worth investigating in the future. According to the Lua timer it shows that it only takes 0.002 seconds to run all the tests. The Windows shell being used is powershell, which could explain why it takes 11 seconds. One thing to investigate is whether you can override the default shell to use cmd.exe instead.</p>
+<hr />
 <h3 id="github-actions">Github Actions</h3>
 <p><em>2020.01.28</em></p>
 <p>Recently noticed Github added Actions for CI/CD tied directly to repositories. Setup my <a href="https://github.com/intxparts/LuaModules">LuaModules</a> repository to run tests when pushing a branch. Thankfully Leafo, an active member of the Lua community and creator of Lapis, had already created a <a href="https://github.com/leafo/gh-actions-lua">custom Github Action</a> to download and build Lua/Luajit with the desired versions. So the only work on my part was tying in my own Lua test framework into the system.</p>
@@ -97,39 +127,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     [&gt; ...
 </code></pre>
 <p>Thankfully Github provides the ability to set environment variables in the container configuration section of the *.yml file.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="at">    </span><span class="fu">on</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">push</span><span class="kw">]</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="at">    </span><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="at">        </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="at">          </span><span class="fu">LUA_PATH</span><span class="kw">:</span><span class="at"> ./src/?.lua</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="at">    ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="at">    </span><span class="fu">on</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">push</span><span class="kw">]</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="at">    </span><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="at">        </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="at">          </span><span class="fu">LUA_PATH</span><span class="kw">:</span><span class="at"> ./src/?.lua</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="at">    ...</span></span></code></pre></div>
 <p>One last problem to solve was ensuring that the test action would fail when a test failed. This was also a simple fix, in 'test_runner.lua':</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode Lua"><code class="sourceCode lua"><span id="cb4-1"><a href="#cb4-1"></a>    <span class="cf">if</span> has_errors <span class="cf">then</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>        <span class="fu">os.exit</span><span class="op">(</span><span class="kw">false</span><span class="op">)</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>    <span class="cf">end</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode Lua"><code class="sourceCode lua"><span id="cb5-1"><a href="#cb5-1"></a>    <span class="cf">if</span> has_errors <span class="cf">then</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>        <span class="fu">os.exit</span><span class="op">(</span><span class="kw">false</span><span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="cf">end</span></span></code></pre></div>
 <p>By setting the exit code to non-zero, the CI picks this up and fails appropriately. At first I had tried to write to stderr, but the CI does not observe output to stderr as a failure.</p>
 <p>Hence we land on the final CI config:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="at">    </span><span class="fu">on</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">push</span><span class="kw">]</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="at">    </span><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="at">        </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="at">          </span><span class="fu">LUA_PATH</span><span class="kw">:</span><span class="at"> ./src/?.lua</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="at">        </span><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v1</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> leafo/gh-actions-lua@v5</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="at">          </span><span class="fu">with</span><span class="kw">:</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="at">            </span><span class="fu">luaVersion</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;5.3&quot;</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run tests</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="at">          </span><span class="fu">run</span><span class="kw">:</span><span class="at"> lua ./src/test_runner.lua -d ./tests -et efail</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="at">    </span><span class="fu">on</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">push</span><span class="kw">]</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="at">    </span><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="at">      </span><span class="fu">test</span><span class="kw">:</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="at">        </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="at">        </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="at">          </span><span class="fu">LUA_PATH</span><span class="kw">:</span><span class="at"> ./src/?.lua</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="at">        </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v1</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> leafo/gh-actions-lua@v5</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="at">          </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="at">            </span><span class="fu">luaVersion</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;5.3&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="at">        </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Run tests</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="at">          </span><span class="fu">run</span><span class="kw">:</span><span class="at"> lua ./src/test_runner.lua -d ./tests -et efail</span></span></code></pre></div>
 <p>Note: the -et efail in the 'Run tests' action means 'exclude tests' marked with tags 'efail' (expected fail).</p>
 <p>While I do appreciate and like how easy it was to use Leafos custom action for downloading and building Lua/Luajit, it is a bit slow. There are some alternatives that would make it much faster:</p>
 <ul>
@@ -149,13 +179,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="c-cross-platform-casting">C++ Cross Platform Casting</h3>
 <p><em>2019.06.04</em></p>
 <p>Stumbled across this at work when the Linux build failed to compile:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode C++"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2"></a>    <span class="dt">unsigned</span> <span class="dt">char</span> c = <span class="ch">&#39;0&#39;</span>;</span>
-<span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    <span class="cf">if</span> (c == <span class="dt">unsigned</span> <span class="dt">char</span>(<span class="dv">1</span>))</span>
-<span id="cb6-5"><a href="#cb6-5"></a>    {</span>
-<span id="cb6-6"><a href="#cb6-6"></a>        </span>
-<span id="cb6-7"><a href="#cb6-7"></a>    }</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode C++"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a>    <span class="dt">unsigned</span> <span class="dt">char</span> c = <span class="ch">&#39;0&#39;</span>;</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="cf">if</span> (c == <span class="dt">unsigned</span> <span class="dt">char</span>(<span class="dv">1</span>))</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    {</span>
+<span id="cb7-6"><a href="#cb7-6"></a>        </span>
+<span id="cb7-7"><a href="#cb7-7"></a>    }</span></code></pre></div>
 <p>Compilation results:</p>
 <ul>
 <li>GCC: fail</li>
@@ -185,11 +215,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>    C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86\
 </code></pre>
 <p>Recommend doing a quick test such as a hello world script to help you determine if your environment is ready to go or not:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb9-1"><a href="#cb9-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="co">-- hello_world.lua</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">print</span><span class="op">(</span><span class="st">&#39;hello world!&#39;</span><span class="op">)</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">-- hello_world.lua</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">print</span><span class="op">(</span><span class="st">&#39;hello world!&#39;</span><span class="op">)</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a></span></code></pre></div>
 <pre><code>    [&gt; glue.exe srlua.exe hello_world.lua hello_world.exe
 </code></pre>
 <hr />
