@@ -19,8 +19,22 @@ local function print_help()
 end
 
 
-local function new_note()
-
+local function new_note(title)
+    local date = os.date('*t')
+    local year = tostring(date.year)
+    local month = tostring(date.month)
+    local day = tostring(date.day)
+    if date.month < 10 then
+        month = string.format('0%d', date.month)
+    end
+    if date.day < 10 then
+        day = string.format('0%d', date.day)
+    end
+    local note_filename = string.format('notes_%s.%s.%s.md', year, month, day)
+    local new_note = io.open(string.format('./notes/%s', note_filename),'w')
+    new_note:write(string.format('# %s', title))
+    new_note:close()
+    print(string.format('created new note: %s', note_filename))
 end
 
 local function fetch_title_from_file(file_path)
@@ -65,7 +79,6 @@ local function run_build()
         index_file:write(string.format('- %s [%s](%s)\n', date, title, html_filepath))
         index_file:close()
         local md_filepath = string.format('.\\%s', v)
-        print(html_filepath)
         generate_html_file(md_filepath, html_filepath, title)
     end
 
@@ -91,7 +104,7 @@ if data['help'] then
 end
 
 if data['new'] then
-    new_note()
+    new_note(data['new'][1])
 end
 
 if data['build'] then
