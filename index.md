@@ -8,10 +8,10 @@ Welcome! This site is dedicated to hosting a number of programming-related proje
 
 ## Notes
 
-- 2020_02_11 [Github Actions \[Windows speed up\]](.\notes\notes_2020_02_11.html)
-- 2020_02_10 [Github Actions \[speed up\]](.\notes\notes_2020_02_10.html)
-- 2020_01_28 [Github Actions](.\notes\notes_2020_01_28.html)
-- 2019_06_04 [C++ Cross Platform Casting](.\notes\notes_2019_06_04.html)
-- 2017_09_19 [Building srlua on Windows](.\notes\notes_2017_09_19.html)
-- 2017_08_23 [Useful learning Vim links](.\notes\notes_2017_08_23.html)
-- 2017_08_19 [Useful WiX Toolset Links](.\notes\notes_2017_08_19.html)
+- 2020.02.11 [Github Actions \[Windows speed up\]](.\notes\notes_2020.02.11.html)
+- 2020.02.10 [Github Actions \[speed up\]](.\notes\notes_2020.02.10.html)
+- 2020.01.28 [Github Actions](.\notes\notes_2020.01.28.html)
+- 2019.06.04 [C++ Cross Platform Casting](.\notes\notes_2019.06.04.html)
+- 2017.09.19 [Building srlua on Windows](.\notes\notes_2017.09.19.html)
+- 2017.08.23 [Useful learning Vim links](.\notes\notes_2017.08.23.html)
+- 2017.08.19 [Useful WiX Toolset Links](.\notes\notes_2017.08.19.html)
