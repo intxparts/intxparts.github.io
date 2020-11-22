@@ -2,7 +2,7 @@ local args = require('args')
 local path = require('path')
 local file = require('file')
 local ose = require('os_ext')
-
+local str = require('str')
 
 local function print_help()
 	local str_format = "%-15s | %-3s | %-25s | %-60s"
