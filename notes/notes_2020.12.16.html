@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Git Undo Last Commit</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="git-undo-last-commit">Git Undo Last Commit</h1>
+<pre><code>git reset head~1 --soft
+</code></pre>
+<p>This will move the pointer of head back one commit and keep the changes that were made (they will be staged).</p>
+<p><strong>--soft</strong> is what retains the changes.</p>
+<p>Suppose you then commit and try to push to a remote. If the remote already has a commit that was made previously, you may need to use the force flag <strong>(-f | --force)</strong> to override that commit if it is desired to do so.</p>
+<pre><code>git push origin trunk -f
+</code></pre>
+</body>
+</html>

@@ -30,9 +30,11 @@ local function new_note(title)
     if date.day < 10 then
         day = string.format('0%d', date.day)
     end
-    local note_filename = string.format('notes_%s.%s.%s.md', year, month, day)
+	local note_date_str = string.format('%s.%s.%s', year, month, day)
+    local note_filename = string.format('notes_%s.md', note_date_str)
     local new_note = io.open(string.format('./notes/%s', note_filename),'w')
-    new_note:write(string.format('# %s', title))
+    new_note:write(string.format('# %s\n\n', title))
+    new_note:write(string.format('*%s*\n\n', note_date_str))
     new_note:close()
     print(string.format('created new note: %s', note_filename))
 end
