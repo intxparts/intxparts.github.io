@@ -1,4 +1,6 @@
-# Games
+# Old Jim's Game Shelf
+
+[![](images/general_store48.png)](index.html)
 
 ### Ludum Dare Entries
 

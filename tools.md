@@ -1,4 +1,6 @@
-# Tools
+# Old Jim's Toolbox
+
+[![](images/general_store48.png)](index.html)
 
 ---
 

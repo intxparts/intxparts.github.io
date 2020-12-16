@@ -68,23 +68,24 @@ local function run_build()
     local include_subdir = false
     local note_file_list = path.list_files('notes', include_subdir)
     table.sort(note_file_list, function(i, j) return i > j end) -- order by most recent note
-    file.copy('template-index.md', 'index.md')
+    file.copy('template-devNotes.md', 'devNotes.md')
 
     for k, v in ipairs(note_file_list) do
         local title = fetch_title_from_file(v)
         local date = fetch_date_from_file_path(v)
         local file_name_no_ext = string.sub(v, 1, string.len(v) - 3)
         local html_filepath = string.format('.\\%s.html', file_name_no_ext)
-        local index_file = io.open('index.md', 'a+')
+        local index_file = io.open('devNotes.md', 'a+')
         index_file:write(string.format('- %s [%s](%s)\n', date, title, html_filepath))
         index_file:close()
         local md_filepath = string.format('.\\%s', v)
         generate_html_file(md_filepath, html_filepath, title)
     end
 
-    generate_html_file('index.md', 'index.html', 'Old Jim\'s General Dev Store')
+    generate_html_file('index.md', 'index.html', 'Old Jim\'s General Store')
     generate_html_file('tools.md', 'tools.html', 'Old Jim\'s Toolbox')
-    generate_html_file('games.md', 'games.html', 'Old Jim\'s Game Shelf')--]]
+    generate_html_file('games.md', 'games.html', 'Old Jim\'s Game Shelf')
+	generate_html_file('devNotes.md', 'devNotes.html', 'Old Jim\'s Dev Notes')
 end
 
 
