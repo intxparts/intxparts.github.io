@@ -11,7 +11,7 @@ Personal programming projects website hosted on github.
 - requires the latest from the [LuaModules](https://github.com/intxparts/LuaModules) repository
 - requires LuaModules repository to be accessible from LUA_PATH
 
-*build.lua* provides two commands: "new note" and "build".
+*build.lua* provides several commands: "new dev note", "new math note" and "build".
 
 
 ### New Dev Note
