@@ -59,7 +59,7 @@ local function fetch_date_from_file_path(file_path)
 end
 
 local function generate_html_file(md_filepath, html_filepath, title)
-    local command = string.format('pandoc -f gfm -t html -s -o %s %s --metadata pagetitle=%q', html_filepath, md_filepath, title)
+    local command = string.format('pandoc -f gfm -t html -s -o %s %s --metadata pagetitle=%q -V "mainfont:Font-Regular.otf"', html_filepath, md_filepath, title)
     print(command)
     ose.run_command(command)
 end
