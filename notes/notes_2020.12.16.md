@@ -1,4 +1,4 @@
-# Git Undo Last Commit
+# Git undo last commit
 
 *2020.12.16*
 

@@ -2,8 +2,8 @@
 
 [![](images/general_store48.png)](index.html)
 
-- 2020.12.17 [nil](.\notes\notes_2020.12.17.html)
-- 2020.12.16 [Git Undo Last Commit](.\notes\notes_2020.12.16.html)
+- 2020.12.17 [Rendering math equations](.\notes\notes_2020.12.17.html)
+- 2020.12.16 [Git undo last commit](.\notes\notes_2020.12.16.html)
 - 2020.02.11 [Github Actions \[Windows speed up\]](.\notes\notes_2020.02.11.html)
 - 2020.02.10 [Github Actions \[speed up\]](.\notes\notes_2020.02.10.html)
 - 2020.01.28 [Github Actions](.\notes\notes_2020.01.28.html)

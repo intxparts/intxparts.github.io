@@ -1,7 +1,8 @@
+# Rendering math equations
+
 <link rel="stylesheet" href="..\dependencies\katex0.12.0\katex.min.css">
 <script defer src="..\dependencies\katex0.12.0\katex.min.js"></script>
 <script defer src="..\dependencies\katex0.12.0\contrib\auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-# Rendering math equations
 
 *2020.12.17*
 
