@@ -14,14 +14,25 @@ Personal programming projects website hosted on github.
 *build.lua* provides two commands: "new note" and "build".
 
 
-### New Note
+### New Dev Note
 
-This will create a new note markdown file under the notes directory with filename: 'notes_YYYY.MM.DD.md'.
+This will create a new dev note markdown file under the notes directory with filename: 'notes_YYYY.MM.DD.md'.
 
 
 ```bat
 
-lua build.lua -n "New Note"
+lua build.lua -nd "New Note"
+
+```
+
+### New Math Note
+
+This will create a new dev note markdown file under the notes directory with filename: 'mathNotes_YYYY.MM.DD.md'.
+
+
+```bat
+
+lua build.lua -nm "New Note"
 
 ```
 

@@ -19,7 +19,7 @@ local function print_help()
 end
 
 
-local function new_note(title)
+local function new_note(note_folder, title)
     local date = os.date('*t')
     local year = tostring(date.year)
     local month = tostring(date.month)
@@ -31,13 +31,20 @@ local function new_note(title)
         day = string.format('0%d', date.day)
     end
 	local note_date_str = string.format('%s.%s.%s', year, month, day)
-    local note_filename = string.format('notes_%s.md', note_date_str)
-    local new_note = io.open(string.format('./notes/%s', note_filename),'w')
+    local note_filename = string.format('%s_%s.md', note_folder, note_date_str)
+    local new_note = io.open(string.format('./%s/%s', note_folder, note_filename),'w')
     new_note:write(string.format('# %s\n\n', title))
+	if note_folder == 'mathNotes' then
+		new_note:write('<link rel="stylesheet" href="..\\dependencies\\katex0.12.0\\katex.min.css">\n')
+		new_note:write('<script defer src="..\\dependencies\\katex0.12.0\\katex.min.js"></script>\n')
+		new_note:write('<script defer src="..\\dependencies\\katex0.12.0\\contrib\\auto-render.min.js" onload="renderMathInElement(document.body);"></script>\n\n')
+	end
+
     new_note:write(string.format('*%s*\n\n', note_date_str))
     new_note:close()
     print(string.format('created new note: %s', note_filename))
 end
+
 
 local function fetch_title_from_file(file_path)
     local file = io.open(file_path, 'r')
@@ -52,9 +59,11 @@ local function fetch_title_from_file(file_path)
 end
 
 local function fetch_date_from_file_path(file_path)
-    local pos = string.find(file_path, 'notes\\notes_')
+    local pos = string.find(file_path, '_')
     if pos == nil then return nil end
-    local date = string.sub(file_path, pos + 12, string.len(file_path) - pos - 2)
+
+	-- 2020.12.18 (10 chars)
+    local date = string.sub(file_path, pos + 1, pos + 10)
     return date
 end
 
@@ -64,34 +73,41 @@ local function generate_html_file(md_filepath, html_filepath, title)
     ose.run_command(command)
 end
 
-
-local function run_build()
-    file.delete('.\\notes\\*.html')
+local function generate_notes(note_folder, note_md_file)
+	file.delete(string.format('.\\%s\\*.html', note_folder))
     local include_subdir = false
-    local note_file_list = path.list_files('notes', include_subdir)
+    local note_file_list = path.list_files(note_folder, include_subdir)
     table.sort(note_file_list, function(i, j) return i > j end) -- order by most recent note
-    file.copy('template-devNotes.md', 'devNotes.md')
-
+	local template_file = string.format('template-%s', note_md_file)
+	file.copy(template_file, note_md_file)
     for k, v in ipairs(note_file_list) do
         local title = fetch_title_from_file(v)
         local date = fetch_date_from_file_path(v)
         local file_name_no_ext = string.sub(v, 1, string.len(v) - 3)
         local html_filepath = string.format('.\\%s.html', file_name_no_ext)
-        local index_file = io.open('devNotes.md', 'a+')
+        local index_file = io.open(note_md_file, 'a+')
         index_file:write(string.format('- %s [%s](%s)\n', date, title, html_filepath))
         index_file:close()
         local md_filepath = string.format('.\\%s', v)
         generate_html_file(md_filepath, html_filepath, title)
     end
+end
+
+
+local function run_build()
+	generate_notes('notes', 'devNotes.md')
+	generate_notes('mathNotes', 'mathNotes.md')
 
     generate_html_file('index.md', 'index.html', 'Old Jim\'s General Store')
     generate_html_file('tools.md', 'tools.html', 'Old Jim\'s Toolbox')
     generate_html_file('games.md', 'games.html', 'Old Jim\'s Game Shelf')
 	generate_html_file('devNotes.md', 'devNotes.html', 'Old Jim\'s Dev Notes')
+	generate_html_file('mathNotes.md', 'mathNotes.html', 'Old Jim\'s Math Notes')
 end
 
 
-args:add_command('new', 'string', {'-n', '--new'}, 1, false, 'Create new note')
+args:add_command('newDevNote', 'string', {'-nd', '--newDevNote'}, 1, false, 'Create new dev note')
+args:add_command('newMathNote', 'string', {'-nm', '--newMathNote'}, 1, false, 'Create new math note')
 args:add_command('build', 'string', {'-b', '--build'}, 0, false, 'Run the build')
 args:add_command('help', 'boolean', {'-h', '--help', '/?' }, 0, false, 'Display all available commands.')
 
@@ -106,8 +122,12 @@ if data['help'] then
 	return
 end
 
-if data['new'] then
-    new_note(data['new'][1])
+if data['newDevNote'] then
+    new_note('notes', data['newDevNote'][1])
+end
+
+if data['newMathNote'] then
+	new_note('mathNotes', data['newMathNote'][1])
 end
 
 if data['build'] then
