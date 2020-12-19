@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>WiX Installer Notes</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Font-Regular.otf;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="wix-installer-notes">WiX Installer Notes</h1>
+<p><em>2020.12.18</em></p>
+<p>These are some old notes for the WiX (Windows Installer XML) toolset. Hopefully these will not be needed anytime soon.</p>
+<h2 id="useful-links">Useful links:</h2>
+<p><a href="http://wixtoolset.org/">WiX Toolset</a></p>
+<p><a href="http://www.instedit.com/" title="InstEdit">InstEdit -- for viewing and comparing MSI files</a></p>
+<h2 id="debugging-msi-installer-files">Debugging MSI installer files</h2>
+<p>msiexec.exe is responsible for executing any *.msi file.</p>
+<p>To enable full logging during installation:</p>
+<pre><code>msiexec.exe /I &lt;file.msi&gt; /L*vx log.txt
+
+/L enables logging
+&#39;*&#39; enables all output
+&#39;v&#39; enables verbose logging
+&#39;x&#39; enables extra debug information</code></pre>
+<p>MSI is a special type of database file in that it contains all of the content required for installation</p>
+<h2 id="windows-installer-codes">Windows Installer Codes</h2>
+<p>Package Code - GUID - Uniquely Identifies a MSI File</p>
+<p>Product Code - GUID - Uniquely Identifies a product release -- changes usually with the product version</p>
+<p>Upgrade Code - GUID - Uniquely Identifies a set of related products -- supports upgrade functionality</p>
+<h2 id="properties">Properties</h2>
+<p>Properties are used to store information (variables)</p>
+<p>Property contains a name and value</p>
+<ul>
+<li>name begins with letter or underscore followed by any combo of letters, numbers, underscores, periods</li>
+<li>value is just text</li>
+</ul>
+<p>Scope:</p>
+<ul>
+<li>public
+<ul>
+<li>letters in name must be all CAPS</li>
+<li>persist between the client side and server side phases of install</li>
+<li>values can be specified on the command line</li>
+</ul></li>
+<li>private
+<ul>
+<li>any variable name other than all caps</li>
+<li>persist only in the phase it's defined in</li>
+<li>value can't be specified on command line</li>
+</ul></li>
+</ul>
+<p>Details:</p>
+<ul>
+<li>Properties are stored into the Property table.</li>
+<li>Property data can be dumped to log files
+<ul>
+<li>hence don't put any confidential information in properties</li>
+</ul></li>
+<li>Can be used in conditions</li>
+</ul>
+<p>Required Properties:</p>
+<ul>
+<li>Product Code</li>
+<li>Product Language</li>
+<li>Manufacturer</li>
+<li>Product Version</li>
+<li>Product Name</li>
+</ul>
+<h2 id="features-and-components">Features and Components</h2>
+<p>Features:</p>
+<ul>
+<li>Contain 1 or more components</li>
+<li>can be visible to the user in the installer UI</li>
+<li>ex: product documentation</li>
+<li>represented in install wizard as a tree</li>
+</ul>
+<p>Components:</p>
+<ul>
+<li>are set of resources that are install/removed together
+<ul>
+<li>file(s)</li>
+<li>shortcuts</li>
+<li>registry keys</li>
+</ul></li>
+<li>have a GUI identifier</li>
+<li>have what is called a keypath</li>
+<li>recommended that 1:1 mapping preserved between files and components
+<ul>
+<li>this is to not break resiliency - only file marked as the keypath can be repaired</li>
+</ul></li>
+</ul>
+<p>Component Keypath:</p>
+<ul>
+<li>file or registry key used to detect the component</li>
+<li>enables Windows installer resiliency
+<ul>
+<li>whether or not it can be removed/repaired</li>
+</ul></li>
+</ul>
+<h2 id="installation-types">Installation Types</h2>
+<p>Simple:</p>
+<ul>
+<li>most common</li>
+</ul>
+<p>Administrative:</p>
+<ul>
+<li>network administrator can install the application's source image to the network</li>
+</ul>
+<p>Advertisement:</p>
+<ul>
+<li>only the interface for launching the app is installed</li>
+<li>when the user starts the app then on-demand installation occurs</li>
+</ul>
+<h2 id="phases-of-install">Phases of Install</h2>
+<ul>
+<li>UI - client side (runs with user privileges)
+<ul>
+<li>can be turned off via command line (/q)</li>
+<li>collects data from user</li>
+<li>must not modify users system!</li>
+</ul></li>
+<li>Execution - server side (runs as LocalSystem)
+<ul>
+<li>All system changes must occur here</li>
+<li>this phase is transactional and therefore reversible</li>
+</ul></li>
+</ul>
+<h2 id="sequences">Sequences</h2>
+<ul>
+<li>specify what action should be run and which order in which they are executed</li>
+</ul>
+<p>Simple Install Sequences:</p>
+<pre><code>1. InstallUISequence
+2. InstallExecuteSequence</code></pre>
+<p>Administrative Install Sequences:</p>
+<pre><code>1. AdminUISequence
+2. AdminExecuteSequence</code></pre>
+<p>Advertisement Install Sequences:</p>
+<pre><code>1. AdvtExecuteSequence</code></pre>
+<p>Sequence Table Columns:</p>
+<ol type="1">
+<li>Action - references a standard or custom action</li>
+<li>Condition - optional expression that determines if action is executed
+<ul>
+<li>(Action is executed if expression evaluates to 'true' or is blank)</li>
+</ul></li>
+<li>Sequence - defines the order in which the actions are executed</li>
+</ol>
+<h2 id="actions">Actions</h2>
+<p><a href="https://msdn.microsoft.com/en-us/library/aa372023(v=vs.85).aspx">Standard Actions</a></p>
+<p>Custom Action examples:</p>
+<ul>
+<li>set a directory location to install-time value (type 35 custom action)</li>
+<li>set a Windows Installer property to install-time value</li>
+</ul>
+<h3 id="type-1-custom-action">Type 1 Custom Action</h3>
+<ul>
+<li>Calls a function in a DLL</li>
+<li>Must have the following C Function Signature:
+<ul>
+<li>UINT __stdcall MyFunction(MSIHANDLE hModule)</li>
+</ul></li>
+<li>DLL must be stored in the binary table of the MSI database</li>
+<li>DLL does not have to be copied to target system since it's in the database</li>
+</ul>
+<h3 id="type-2-custom-action">Type 2 Custom Action</h3>
+<ul>
+<li>calls an executable stored in the binary table with a command line</li>
+<li>EXE does not have to be copied to target system since it's in the database</li>
+</ul>
+<h3 id="type-17--18-custom-actions">Type 17 / 18 Custom Actions</h3>
+<ul>
+<li>calls a .DLL/.EXE that is installed with the product (installed by installer)</li>
+<li>must run as deferred and executed after install files standard action</li>
+<li>non-deffered actions must be executed after install finalize</li>
+</ul>
+<h3 id="type-19-custom-action">Type 19 Custom Action</h3>
+<ul>
+<li>Displays an error message from a formatted string and terminates installation</li>
+</ul>
+<h3 id="type-34-custom-action">Type 34 Custom Action</h3>
+<ul>
+<li>calls .EXE using a path from a DIRECTORY table entry</li>
+</ul>
+<h3 id="type-35-custom-action">Type 35 Custom Action</h3>
+<ul>
+<li>sets an install directory from a formatted string</li>
+</ul>
+<h3 id="type-50-custom-action">Type 50 Custom Action</h3>
+<ul>
+<li>calls .EXE using a path from a Windows Installer Property</li>
+</ul>
+<h3 id="type-51-custom-action">Type 51 Custom Action</h3>
+<ul>
+<li>sets a property from a formatted string</li>
+</ul>
+<h2 id="conditions">Conditions</h2>
+<p>Used in:</p>
+<ul>
+<li>sequences</li>
+<li>launch condition table</li>
+<li>feature and component conditions</li>
+<li>UI features</li>
+</ul>
+<p>Comparison Operators (both strings and ints):</p>
+<pre><code>Op  | Meaning
+-------------
+=   | Equal To
+&lt;&gt;  | Not equal to
+&gt;   | Greater Than
+&lt;   | Less Than
+&gt;=  | Greater than or equal
+&lt;=  | Less than or equal</code></pre>
+<p>Strings:</p>
+<ul>
+<li>Strings are compared lexicographically when using &lt; and &gt;</li>
+<li>= compares them with case sensitivity</li>
+<li>~= compares them with case insensitivity</li>
+</ul>
+<p>String specific operators:</p>
+<pre><code>Op  | Meaning
+-------------
+&gt;&lt;  | True if left string contains right string
+&lt;&lt;  | True if left string starts with right string
+&gt;&gt;  | True if left string ends with right string</code></pre>
+<p>Logical Operators:</p>
+<pre><code>Op  | Meaning
+-------------
+AND | True if both sides are true
+OR  | True if at least one side is true
+XOR | True if one side is true and the other is not
+EQV | True if both sides are true or both are false
+IMP | True if left side is false or right side is true
+NOT | Negates the value of the logical expression to its right</code></pre>
+<ul>
+<li>you can use a single property in a condition as well
+<ul>
+<li>the expression evaluates whether the property has been defined</li>
+<li>a property has been defined if has been given any value at all</li>
+</ul></li>
+<li>you can also environment variables %MyEnvVar in conditions</li>
+<li>you can probe Component/Feature keys to inspect the action/future or install/current state
+<ul>
+<li>$MyComp (Action State of component)</li>
+<li>?MyComp (Installed State of component)</li>
+<li>&amp;MyFeat (Action State of feature)</li>
+<li>!MyFeat (Installed State of feature)</li>
+</ul></li>
+</ul>
+<p>Action and Install State Values:</p>
+<pre><code>State                   | Value | Meaning
+-----------------------------------------
+INSTALLSTATE_UNKNOWN    | -1    | No action for feature or component
+INSTALLSTATE_ADVERTISED |  1    | Advertised feature (features only)
+INSTALLSTATE_ABSENT     |  2    | Feature or component not present
+INSTALLSTATE_LOCAL      |  3    | Feature or component locally installed
+INSTALLSTATE_SOURCE     |  4    | Feature or component accessed from source</code></pre>
+<p>Built In Properties:</p>
+<ul>
+<li>Installed - set if product is installed locally</li>
+<li>REMOVE - set during uninstallation</li>
+<li>etc</li>
+</ul>
+<h2 id="formatted-text">Formatted Text</h2>
+<ul>
+<li>there is a special type of strings called "Formatted"</li>
+</ul>
+<p>Formatted Strings:</p>
+<pre><code>string         | Meaning
+-------------------------------------
+[PropertyName] | Replaced by the value of the property
+[DirectoryKey] | Replaced by the path of the directory
+[%EnvVar]      | Replaced by the value of the environment variable
+[#FileKey]     | Replaced by the full path to the file on the target machine</code></pre>
+<ul>
+<li><p>Note the cost standard actions must be run before the [#FileKey] will work properly, otherwise it will return string.empty</p>
+<ul>
+<li>CostInitialize, FileCost, CostFinalize</li>
+</ul></li>
+<li><p>You can format a string with multiple formats using the braces {} to encapsulate the desired string</p>
+<ul>
+<li>{Here are two properties: [PropertyA] and [PropertyB]}</li>
+</ul></li>
+</ul>
+</body>
+</html>
