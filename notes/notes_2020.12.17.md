@@ -32,7 +32,7 @@ While digging into this issue, I stumbled across KaTeX as a recommended solution
 <script defer src="..\dependencies\katex0.12.0\contrib\auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 ```
 
-The next step is to avoid this altogether and build a tool to generate the desired HTML from the Pandoc output so that the visitors of the website will not be required to download and run any javascript. This solution needs to be investigated to see if the performance of the site would be better. There are notes from others that have done this that there is a trade off if there are a lot of equations embedded in the site, that the ssr would produce much larger HTML files.
+The next step is to avoid this altogether and build a tool to pre-render all of the HTML so that the visitors of the website will not be required to download and run any javascript. This solution needs to be investigated to see if the performance is better. Others have noted that there is a trade off if there are a lot of equations embedded in the site, as using pre-rendering would produce much larger HTML files.
 
 $$\int u dv = uv - \int v du$$
 
