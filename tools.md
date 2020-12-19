@@ -14,3 +14,9 @@
 
 - Simple Python Module providing a class based approach for defining JSON schemas with built-in validation and serialization.
 
+---
+
+[Timer](https://github.com/intxparts/timer)
+
+- Simple cross platform console application to compute the execution time of scripts and programs.
+
