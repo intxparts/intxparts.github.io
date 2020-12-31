@@ -2,7 +2,7 @@
 
 *2020.12.30*
 
-Check to see if the ssh-agent is running. (Needs to be run in git-bash installed with [Git for Windows](https://gitforwindows.org/) on Windows.) In most Linux distributions these commands should be already be available.
+Check to see if the ssh-agent is running. (Needs to be run in git-bash installed with [Git for Windows](https://gitforwindows.org/) on Windows.) In most Linux distributions these commands should already be available.
 
 ```
 eval $(ssh-agent -s)
