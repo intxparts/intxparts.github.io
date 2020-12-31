@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Old Jim's Dev Notes</title>
+  <title>Github SSH session setup</title>
   <style>
     html {
       line-height: 1.5;
@@ -149,20 +149,39 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="old-jims-dev-notes">Old Jim's Dev Notes</h1>
-<p><a href="index.html"><img src="images/general_store48.png" /></a></p>
-<ul>
-<li>2020.12.30 <a href=".\notes\notes_2020.12.30.html">Github SSH session setup</a></li>
-<li>2020.12.18 <a href=".\notes\notes_2020.12.18.html">WiX Installer Notes</a></li>
-<li>2020.12.17 <a href=".\notes\notes_2020.12.17.html">Rendering math equations</a></li>
-<li>2020.12.16 <a href=".\notes\notes_2020.12.16.html">Git undo last commit</a></li>
-<li>2020.02.11 <a href=".\notes\notes_2020.02.11.html">Github Actions [Windows speed up]</a></li>
-<li>2020.02.10 <a href=".\notes\notes_2020.02.10.html">Github Actions [speed up]</a></li>
-<li>2020.01.28 <a href=".\notes\notes_2020.01.28.html">Github Actions</a></li>
-<li>2019.06.04 <a href=".\notes\notes_2019.06.04.html">C++ Cross Platform Casting</a></li>
-<li>2017.09.19 <a href=".\notes\notes_2017.09.19.html">Building srlua on Windows</a></li>
-<li>2017.08.23 <a href=".\notes\notes_2017.08.23.html">Useful learning Vim links</a></li>
-<li>2017.08.19 <a href=".\notes\notes_2017.08.19.html">Useful WiX Toolset Links</a></li>
-</ul>
+<h1 id="github-ssh-session-setup">Github SSH session setup</h1>
+<p><em>2020.12.30</em></p>
+<p>Check to see if the ssh-agent is running. (Needs to be run in git-bash installed with <a href="https://gitforwindows.org/">Git for Windows</a> on Windows.) In most Linux distributions these commands should be already be available.</p>
+<pre><code>eval $(ssh-agent -s)</code></pre>
+<p>Adds the ssh private key to the ssh-agent.</p>
+<pre><code>ssh-add ~/.ssh/id_file</code></pre>
+<p>After running these two commands, normal commands such as git fetch, git push, git pull should work.</p>
+<p>If experiencing issues check the task list to ensure an ssh-agent is not already running.</p>
+<pre><code>tasklist /NH | findstr /I &quot;ssh-agent&quot;</code></pre>
+<p>Command line method for killing any ssh-agent process.</p>
+<pre><code>taskkill /IM ssh-agent.exe /F</code></pre>
+<p>In case you want to use git-bash with <a href="https://github.com/Microsoft/Terminal">Windows Terminal</a>, here is an example of a profile to add.</p>
+<pre><code>{
+    ...
+    &quot;profiles&quot;:
+    {
+        ... 
+        &quot;list&quot;:
+        [
+            ...
+            {
+                &quot;guid&quot;: &quot;{INSERT GUID}&quot;,
+                &quot;hidden&quot;: false,
+                &quot;name&quot;: &quot;Git-Bash&quot;,
+                &quot;commandline&quot;: &quot;\&quot;%PROGRAMFILES%\\git\\usr\\bin\\bash.exe\&quot; -i -l&quot;,
+                &quot;icon&quot;: &quot;C:\\Program Files\\Git\\mingw64\\share\\git\\git-for-windows.ico&quot;,
+                &quot;startingDirectory&quot;: &quot;C:\\StartingDirectory\\&quot;
+            }
+        ]
+    },
+    ...
+}</code></pre>
+<p>If setting up ssh for the first time a private key file needs to be generated:</p>
+<pre><code>ssh-keygen -t ed25519 -C &quot;your_email@example.com&quot;</code></pre>
 </body>
 </html>
