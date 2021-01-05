@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Old Jim's Dev Notes</title>
+  <title>VPN Issues</title>
   <style>
     html {
       line-height: 1.5;
@@ -149,21 +149,17 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="old-jims-dev-notes">Old Jim's Dev Notes</h1>
-<p><a href="index.html"><img src="images/general_store48.png" /></a></p>
+<h1 id="vpn-issues">VPN Issues</h1>
+<p><em>2021.01.05</em></p>
+<p>Been having issues with the VPN at work for a while. A lot of the issues are on the ISP side, but most of them have been resolved now. This morning there were a number of failures while on the VPN:</p>
 <ul>
-<li>2021.01.05 <a href=".\notes\notes_2021.01.05.html">VPN Issues</a></li>
-<li>2020.12.30 <a href=".\notes\notes_2020.12.30.html">Github SSH session setup</a></li>
-<li>2020.12.18 <a href=".\notes\notes_2020.12.18.html">WiX Installer Notes</a></li>
-<li>2020.12.17 <a href=".\notes\notes_2020.12.17.html">Rendering math equations</a></li>
-<li>2020.12.16 <a href=".\notes\notes_2020.12.16.html">Git undo last commit</a></li>
-<li>2020.02.11 <a href=".\notes\notes_2020.02.11.html">Github Actions [Windows speed up]</a></li>
-<li>2020.02.10 <a href=".\notes\notes_2020.02.10.html">Github Actions [speed up]</a></li>
-<li>2020.01.28 <a href=".\notes\notes_2020.01.28.html">Github Actions</a></li>
-<li>2019.06.04 <a href=".\notes\notes_2019.06.04.html">C++ Cross Platform Casting</a></li>
-<li>2017.09.19 <a href=".\notes\notes_2017.09.19.html">Building srlua on Windows</a></li>
-<li>2017.08.23 <a href=".\notes\notes_2017.08.23.html">Useful learning Vim links</a></li>
-<li>2017.08.19 <a href=".\notes\notes_2017.08.19.html">Useful WiX Toolset Links</a></li>
+<li>MS Outlook failed to connect to the exchange server</li>
+<li>MS Teams failed to connect to anything/login</li>
+<li>Nuget was unable to resolve the public repository <a href="http://www.nuget.org/api/v2/">www.nuget.org/api/v2/</a></li>
+<li>Unable to ping google.com</li>
 </ul>
+<p>The first two are not surprising since those products tend to be fragile. The last two were alarming and are what pushed me into looking up DNS. Sure enough ipconfig had just what I needed:</p>
+<pre><code>ipconfig /flushdns</code></pre>
+<p>After running that command and restarting the machine everything started working again.</p>
 </body>
 </html>

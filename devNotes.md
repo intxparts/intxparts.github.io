@@ -2,6 +2,7 @@
 
 [![](images/general_store48.png)](index.html)
 
+- 2021.01.05 [VPN Issues](.\notes\notes_2021.01.05.html)
 - 2020.12.30 [Github SSH session setup](.\notes\notes_2020.12.30.html)
 - 2020.12.18 [WiX Installer Notes](.\notes\notes_2020.12.18.html)
 - 2020.12.17 [Rendering math equations](.\notes\notes_2020.12.17.html)
