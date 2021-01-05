@@ -14,7 +14,7 @@ This morning there were a number of failures while on the VPN:
 The first two are not surprising since those products tend to be fragile. The last two were alarming and are what pushed me into looking up DNS. Sure enough ipconfig had just what I needed:
 
 ```
-ipconfig /flushdns
+[> ipconfig /flushdns
 ```
 
 After running that command and restarting the machine everything started working again. 
