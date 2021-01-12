@@ -2,6 +2,7 @@
 
 [![](images/general_store48.png)](index.html)
 
+- 2021.01.11 [Failed to restore; Cycle detected](.\notes\notes_2021.01.11.html)
 - 2021.01.10 [Add reference to dll in .Net Core project](.\notes\notes_2021.01.10.html)
 - 2021.01.09 [.Net App loading dependencies from another directory](.\notes\notes_2021.01.09.html)
 - 2021.01.05 [VPN Issues](.\notes\notes_2021.01.05.html)
