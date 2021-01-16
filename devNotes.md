@@ -2,6 +2,7 @@
 
 [![](images/general_store48.png)](index.html)
 
+- 2021.01.16 [ListViewItem not stretching to width of container](.\notes\notes_2021.01.16.html)
 - 2021.01.14 [ListView Quirks](.\notes\notes_2021.01.14.html)
 - 2021.01.11 [Failed to restore; Cycle detected](.\notes\notes_2021.01.11.html)
 - 2021.01.10 [Add reference to dll in .Net Core project](.\notes\notes_2021.01.10.html)
