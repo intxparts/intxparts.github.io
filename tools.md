@@ -20,3 +20,9 @@
 
 - Simple cross platform console application to compute the execution time of scripts and programs.
 
+---
+
+[Github Gists](https://gist.github.com/intxparts)
+
+- Random scripts, code samples, etc.
+
