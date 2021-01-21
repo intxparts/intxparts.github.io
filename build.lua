@@ -97,16 +97,19 @@ end
 local function run_build()
 	generate_notes('notes', 'devNotes.md')
 	generate_notes('mathNotes', 'mathNotes.md')
+	generate_notes('devStories', 'devStories.md')
 
     generate_html_file('index.md', 'index.html', 'Old Jim\'s General Store')
     generate_html_file('tools.md', 'tools.html', 'Old Jim\'s Toolbox')
     generate_html_file('games.md', 'games.html', 'Old Jim\'s Game Shelf')
 	generate_html_file('devNotes.md', 'devNotes.html', 'Old Jim\'s Dev Notes')
 	generate_html_file('mathNotes.md', 'mathNotes.html', 'Old Jim\'s Math Notes')
+	generate_html_file('devStories.md', 'devStories.html', 'Old Jim\'s Dev Stories')
 end
 
 
 args:add_command('newDevNote', 'string', {'-nd', '--newDevNote'}, 1, false, 'Create new dev note')
+args:add_command('newDevStory', 'string', {'-nds', '--newDevStory'}, 1, false, 'Create new dev story')
 args:add_command('newMathNote', 'string', {'-nm', '--newMathNote'}, 1, false, 'Create new math note')
 args:add_command('build', 'string', {'-b', '--build'}, 0, false, 'Run the build')
 args:add_command('help', 'boolean', {'-h', '--help', '/?' }, 0, false, 'Display all available commands.')
@@ -128,6 +131,10 @@ end
 
 if data['newMathNote'] then
 	new_note('mathNotes', data['newMathNote'][1])
+end
+
+if data['newDevStory'] then
+	new_note('devStories', data['newDevStory'][1])
 end
 
 if data['build'] then

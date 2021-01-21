@@ -7,5 +7,5 @@ Welcome! This site is dedicated to hosting a number of projects. Feel free to ta
 - [Dev Notes](devNotes.html)
 - [Math Notes](mathNotes.html)
 - [Tools](tools.html)
+- [Dev Stories](devStories.html)
 - [Games](games.html)
-
