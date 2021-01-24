@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Old Jim's Dev Stories</title>
+  <title>Env Variables</title>
   <style>
     html {
       line-height: 1.5;
@@ -149,12 +149,16 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="old-jims-dev-stories">Old Jim's Dev Stories</h1>
-<p><a href="index.html"><img src="images/general_store48.png" /></a></p>
-<p>Comics on software development. Made in good fun. :)</p>
-<ul>
-<li>2021.01.24 <a href=".\devStories\devStories_2021.01.24.html">Words</a></li>
-<li>2021.01.20 <a href=".\devStories\devStories_2021.01.20.html">Insanity</a></li>
-</ul>
+<h1 id="env-variables">Env Variables</h1>
+<p><em>2021.01.24</em></p>
+<h3 id="windows">Windows</h3>
+<pre><code>    set LUA_PATH=./src/?.lua
+    set | findstr &quot;LUA_PATH&quot;</code></pre>
+<p>Unfortunately the above does not work in Powershell. For Powershell another method is required.</p>
+<pre><code>    $env:LUA_PATH=&#39;./src/?.lua&#39;
+    dir env: | findstr &quot;LUA_PATH&quot;</code></pre>
+<h3 id="linux">Linux</h3>
+<pre><code>    export LUA_PATH=./src/?.lua
+    printenv | grep &quot;LUA_PATH&quot;</code></pre>
 </body>
 </html>
