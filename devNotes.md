@@ -4,6 +4,7 @@
 
 Short useful notes on various programming topics. Mostly a way to help me remember things I have looked up in the past.
 
+- 2021.01.29 [Moving git repos](.\notes\notes_2021.01.29.html)
 - 2021.01.24 [Env Variables](.\notes\notes_2021.01.24.html)
 - 2021.01.16 [ListViewItem not stretching to width of container](.\notes\notes_2021.01.16.html)
 - 2021.01.14 [ListView Quirks](.\notes\notes_2021.01.14.html)
