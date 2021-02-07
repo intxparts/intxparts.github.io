@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Old Jim's Dev Notes</title>
+  <title>Github CI slowdown on ubuntu-latest</title>
   <style>
     html {
       line-height: 1.5;
@@ -149,30 +149,27 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="old-jims-dev-notes">Old Jim's Dev Notes</h1>
-<p><a href="index.html"><img src="images/general_store48.png" /></a></p>
-<p>Short useful notes on various programming topics. Mostly a way to help me remember things I have looked up in the past.</p>
+<h1 id="github-ci-slowdown-on-ubuntu-latest">Github CI slowdown on ubuntu-latest</h1>
+<p><em>2021.02.07</em></p>
+<p>While making some changes to one of my repos today I noticed the CI for the Linux build was a lot slower than it should be, and I have not changed the CI workflow for some time. The Windows build was actually beating it!!</p>
 <ul>
-<li>2021.02.07 <a href=".\notes\notes_2021.02.07.html">Github CI slowdown on ubuntu-latest</a></li>
-<li>2021.01.29 <a href=".\notes\notes_2021.01.29.html">Moving git repos</a></li>
-<li>2021.01.24 <a href=".\notes\notes_2021.01.24.html">Env Variables</a></li>
-<li>2021.01.16 <a href=".\notes\notes_2021.01.16.html">ListViewItem not stretching to width of container</a></li>
-<li>2021.01.14 <a href=".\notes\notes_2021.01.14.html">ListView Quirks</a></li>
-<li>2021.01.11 <a href=".\notes\notes_2021.01.11.html">Failed to restore; Cycle detected</a></li>
-<li>2021.01.10 <a href=".\notes\notes_2021.01.10.html">Add reference to dll in .Net Core project</a></li>
-<li>2021.01.09 <a href=".\notes\notes_2021.01.09.html">.Net App loading dependencies from another directory</a></li>
-<li>2021.01.05 <a href=".\notes\notes_2021.01.05.html">VPN Issues</a></li>
-<li>2020.12.30 <a href=".\notes\notes_2020.12.30.html">Github SSH session setup</a></li>
-<li>2020.12.18 <a href=".\notes\notes_2020.12.18.html">WiX Installer Notes</a></li>
-<li>2020.12.17 <a href=".\notes\notes_2020.12.17.html">Rendering math equations</a></li>
-<li>2020.12.16 <a href=".\notes\notes_2020.12.16.html">Git undo last commit</a></li>
-<li>2020.02.11 <a href=".\notes\notes_2020.02.11.html">Github Actions [Windows speed up]</a></li>
-<li>2020.02.10 <a href=".\notes\notes_2020.02.10.html">Github Actions [speed up]</a></li>
-<li>2020.01.28 <a href=".\notes\notes_2020.01.28.html">Github Actions</a></li>
-<li>2019.06.04 <a href=".\notes\notes_2019.06.04.html">C++ Cross Platform Casting</a></li>
-<li>2017.09.19 <a href=".\notes\notes_2017.09.19.html">Building srlua on Windows</a></li>
-<li>2017.08.23 <a href=".\notes\notes_2017.08.23.html">Useful learning Vim links</a></li>
-<li>2017.08.19 <a href=".\notes\notes_2017.08.19.html">Useful WiX Toolset Links</a></li>
+<li>ubuntu-latest: 30s</li>
+<li>Windows: 6s</li>
 </ul>
+<p>Something was not right.</p>
+<p>The only thing that runs on each platform is the Lua binary running the test scripts. Looking at the results from the test runs, the tests are still reporting the same numbers for both platforms:</p>
+<ul>
+<li>ubuntu-latest: 0.09s</li>
+<li>Windows: 0.5s</li>
+</ul>
+<p>Looking at the history of the builds, the last build I ran a month ago reported the expected overall numbers for each platform:</p>
+<ul>
+<li>ubuntu-latest: 2s</li>
+<li>Windows: 7s</li>
+</ul>
+<p>I noticed while navigating through the Actions screen that there was a warning about an upcoming transition from 18.04 -&gt; 20.04 for the ubuntu-latest builds.</p>
+<p><img src="images\GithubCISlowdownUbuntuLatest\sus.png" /></p>
+<p>Sure enough, the newer version of ubuntu appears to be slowing things down significantly. Targeting the build explicitly for ubuntu-18.04 gets the build times back to expected levels.</p>
+<p>For now I have left my build targetting 18.04 in hopes that the latest ubuntu will be fixed once Github completes the transition. If not, we will have more digging to do ;).</p>
 </body>
 </html>
