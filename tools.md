@@ -22,7 +22,7 @@
 
 ---
 
-[Dice Tool](dicetool.html)
+[Dice Tool](diceTool.html)
 
 - Basic web-based dice tool for tabletop games.
 
