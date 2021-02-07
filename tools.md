@@ -22,6 +22,12 @@
 
 ---
 
+[Dice Tool](dicetool.html)
+
+- Basic web-based dice tool for tabletop games.
+
+---
+
 [Github Gists](https://gist.github.com/intxparts)
 
 - Random scripts, code samples, etc.

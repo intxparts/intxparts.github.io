@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Old Jim's Dice Tool</title>
+		<h1>Old Jim's Dice Tool</h1>
+	</head>
+	<body>
+		<div>
+			<p><b>Keys:</b></p>
+			<ul>
+				<li>Enter - evaluate expression</li>
+				<li>ArrowUp/ArrowDown - navigate through the past valid expressions ran</li>
+			</ul>
+		</div>
+		<div>
+			<p><b>Expression examples:</b></p>
+			<ul>
+				<li>1 random integer from 1-10: [d10]</li>
+				<li>2 random integers from 1-4 summed together: [2d4]</li>
+				<li>1 random integer from 5-8: [d8r5]</li>
+			</ul>
+		</div>
+		<div>
+			<p><b>Type expression:</b></p>
+			<input id="cmdTextBox" type="text">
+			<button id="clearHistoryButton">Clear History</button>
+		</div>
+		<div>
+			<p>
+				<label><b>Expression History:</b></label>
+			</p>
+		</div>
+		<div style="height:200px;width:400px;overflow:scroll;overflow-x:hidden;overflow-y:scroll;">
+			<label id="cmdHistoryLabel"></label>
+		</div>
+		
+		<script>
+		'use strict';
+		(function() {
+			let cmdHistory = [];
+			let cmdHistoryIdx = cmdHistory.length;
+			
+			function cmdHistoryLabel() {
+				return document.getElementById('cmdHistoryLabel');
+			}
+			
+			function cmdTextBox() {
+				return document.getElementById('cmdTextBox');
+			}
+			
+			function clearHistoryButton() {
+				return document.getElementById('clearHistoryButton');
+			}
+			
+			function getRandomInt(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1) + min);
+			}
+			
+			
+			function processToken(token) {
+				let result = {
+					value: 0,
+					evaluations: []
+				}; 
+				let i = 1;
+				
+				let numberOfDice = [];
+				while (token[i] !== 'd') {
+					let ci = parseInt(token[i]);
+					numberOfDice.push(ci);
+					i += 1;
+				}
+				i += 1; // consume the d
+				
+				let numberOfDiceToRoll = 0;
+				for (let q = 0; q < numberOfDice.length; ++q) {
+					numberOfDiceToRoll = numberOfDice[q] * 10**(numberOfDice.length - q - 1) + numberOfDiceToRoll;
+				}
+				
+				if (numberOfDiceToRoll === 0)
+					numberOfDiceToRoll = 1;
+				
+				let maxNumberArr = [];
+				while (token[i] !== ']') {
+					if (token[i] === 'r')
+					{
+						i += 1; // consume the r
+						break;
+					}
+				
+					let ci = parseInt(token[i]);
+					maxNumberArr.push(ci);
+					i += 1;
+				}
+				
+				let maxNumber = 0;
+				for (let q = 0; q < maxNumberArr.length; ++q) {
+					maxNumber = maxNumberArr[q] * 10**(maxNumberArr.length - q - 1) + maxNumber;
+				}
+				
+				let minNumberArr = [];
+				while (token[i] !== ']') {
+					let ci = parseInt(token[i]);
+					minNumberArr.push(ci);
+					i += 1;
+				}
+				
+				let minNumber = 0;
+				for (let q = 0; q < minNumberArr.length; ++q) {
+					minNumber = minNumberArr[q] * 10**(minNumberArr.length - q - 1) + minNumber;
+				}
+				
+				if (minNumber === 0)
+					minNumber = 1;
+					
+				let sum = 0;
+				for (let t = 0; t < numberOfDiceToRoll; ++t) {
+					let r = getRandomInt(minNumber, maxNumber);
+					result.evaluations.push(r);
+					sum += r;
+				}
+				result.value = sum;
+				return result;
+			}
+			
+			function evaluateExpression(input) {
+				let expressionResult = {
+					success: true,
+					value: 0,
+					evaluations: []
+				};
+				
+				let re = /^(\[[0-9]*d[0-9]+(r[0-9]+)?\])$/;
+				let validation = re.exec(input);
+				if (validation == null || validation.length < 1)
+				{
+					expressionResult.success = false;
+					return expressionResult;
+				}
+				
+				let result = processToken(input);
+				expressionResult.value = result.value;
+				expressionResult.evaluations = result.evaluations;
+				
+				return expressionResult;
+			}
+			
+			function processExpression() {
+				// console.log('evaluating expression...');
+				let textBox = cmdTextBox();
+				let expression = textBox.value;
+				
+				// console.log(expression);
+				let result = evaluateExpression(expression);
+				if (result.success) {
+					// tack on the last expression to the label
+					let historyLabel = cmdHistoryLabel();
+					let history = historyLabel.innerText;
+					
+					let evalStr = result.evaluations.join('+');
+					history = `${history}${expression} = ${evalStr} = ${result.value}\n`;
+					historyLabel.innerText = history;
+					
+					cmdHistory.push(expression);
+					cmdHistoryIdx = cmdHistory.length;
+					
+					// clear the expression on success
+					textBox.value = '';
+				}
+			}
+			
+			function clearHistoryButton_onClick() {
+				let historyLabel = cmdHistoryLabel();
+				cmdHistory = [];
+				cmdHistoryIdx = cmdHistory.length;
+				historyLabel.innerText = '';
+			}
+		
+			function onKeyDown(event) {
+				// console.log(event.code);
+				switch (event.code)
+				{
+				case 'Enter':
+					processExpression();
+					break;
+				case 'ArrowUp':
+					// console.log('up arrow');
+					// console.log(cmdHistoryIdx);
+					if (cmdHistoryIdx > 0)
+					{
+						cmdHistoryIdx -= 1;
+						let textBox = cmdTextBox();
+						textBox.value = cmdHistory[cmdHistoryIdx];
+					}
+					
+					break;
+				case 'ArrowDown':
+					// console.log('down arrow');
+					// console.log(cmdHistoryIdx);
+					if (cmdHistoryIdx < cmdHistory.length-1)
+					{
+						cmdHistoryIdx += 1;
+						let textBox = cmdTextBox();
+						textBox.value = cmdHistory[cmdHistoryIdx];
+					}
+					else if (cmdHistoryIdx === cmdHistory.length - 1)
+					{
+						cmdHistoryIdx += 1;
+						let textBox = cmdTextBox();
+						textBox.value = '';
+					}
+					break;
+				}
+			}
+			
+			let cmdTB = cmdTextBox();
+			cmdTB.addEventListener('keydown', onKeyDown);
+			
+			let clearHistoryBtn = clearHistoryButton();
+			clearHistoryBtn.addEventListener('click', clearHistoryButton_onClick);
+		})();
+		</script>
+	</body>
+</html>
