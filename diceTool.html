@@ -24,12 +24,16 @@
 		</div>
 		<div>
 			<p><b>Type expression:</b></p>
+			<button id="prevExpressionButton">&uarr;</button>
+			<button id="nextExpressionButton">&darr;</button>
 			<input id="cmdTextBox" type="text">
-			<button id="clearHistoryButton">Clear History</button>
+			<button id="evaluateButton">Evaluate</button>
+
 		</div>
 		<div>
 			<p>
 				<label><b>Expression History:</b></label>
+				<button id="clearHistoryButton">Clear History</button>
 			</p>
 		</div>
 		<div style="height:200px;width:400px;overflow:scroll;overflow-x:hidden;overflow-y:scroll;">
@@ -39,27 +43,25 @@
 		<script>
 		'use strict';
 		(function() {
+			
+			// controls
+			let cmdTextBox = document.getElementById('cmdTextBox');
+			let cmdHistoryLabel = document.getElementById('cmdHistoryLabel');
+			let clearHistoryButton = document.getElementById('clearHistoryButton');
+			let prevExpressionButton = document.getElementById('prevExpressionButton');
+			let nextExpressionButton = document.getElementById('nextExpressionButton');
+			let evaluateButton = document.getElementById('evaluateButton');
+			
+			// data
 			let cmdHistory = [];
 			let cmdHistoryIdx = cmdHistory.length;
 			
-			function cmdHistoryLabel() {
-				return document.getElementById('cmdHistoryLabel');
-			}
-			
-			function cmdTextBox() {
-				return document.getElementById('cmdTextBox');
-			}
-			
-			function clearHistoryButton() {
-				return document.getElementById('clearHistoryButton');
-			}
-			
+			// functions
 			function getRandomInt(min, max) {
 				min = Math.ceil(min);
 				max = Math.floor(max);
 				return Math.floor(Math.random() * (max - min + 1) + min);
 			}
-			
 			
 			function processToken(token) {
 				let result = {
@@ -151,35 +153,57 @@
 			
 			function processExpression() {
 				// console.log('evaluating expression...');
-				let textBox = cmdTextBox();
-				let expression = textBox.value;
+				let expression = cmdTextBox.value;
 				
 				// console.log(expression);
 				let result = evaluateExpression(expression);
 				if (result.success) {
 					// tack on the last expression to the label
-					let historyLabel = cmdHistoryLabel();
-					let history = historyLabel.innerText;
+					let history = cmdHistoryLabel.innerText;
 					
 					let evalStr = result.evaluations.join('+');
 					history = `${history}${expression} = ${evalStr} = ${result.value}\n`;
-					historyLabel.innerText = history;
+					cmdHistoryLabel.innerText = history;
 					
 					cmdHistory.push(expression);
 					cmdHistoryIdx = cmdHistory.length;
 					
 					// clear the expression on success
-					textBox.value = '';
+					cmdTextBox.value = '';
 				}
 			}
 			
 			function clearHistoryButton_onClick() {
-				let historyLabel = cmdHistoryLabel();
 				cmdHistory = [];
 				cmdHistoryIdx = cmdHistory.length;
-				historyLabel.innerText = '';
+				cmdHistoryLabel.innerText = '';
 			}
-		
+			
+			function loadPrevExpression() {
+				// console.log('up arrow');
+				// console.log(cmdHistoryIdx);
+				if (cmdHistoryIdx > 0)
+				{
+					cmdHistoryIdx -= 1;
+					cmdTextBox.value = cmdHistory[cmdHistoryIdx];
+				}
+			}
+			
+			function loadNextExpression() {
+				// console.log('down arrow');
+				// console.log(cmdHistoryIdx);
+				if (cmdHistoryIdx < cmdHistory.length-1)
+				{
+					cmdHistoryIdx += 1;
+					cmdTextBox.value = cmdHistory[cmdHistoryIdx];
+				}
+				else if (cmdHistoryIdx === cmdHistory.length - 1)
+				{
+					cmdHistoryIdx += 1;
+					cmdTextBox.value = '';
+				}
+			}
+			
 			function onKeyDown(event) {
 				// console.log(event.code);
 				switch (event.code)
@@ -188,40 +212,20 @@
 					processExpression();
 					break;
 				case 'ArrowUp':
-					// console.log('up arrow');
-					// console.log(cmdHistoryIdx);
-					if (cmdHistoryIdx > 0)
-					{
-						cmdHistoryIdx -= 1;
-						let textBox = cmdTextBox();
-						textBox.value = cmdHistory[cmdHistoryIdx];
-					}
-					
+					loadPrevExpression();
 					break;
 				case 'ArrowDown':
-					// console.log('down arrow');
-					// console.log(cmdHistoryIdx);
-					if (cmdHistoryIdx < cmdHistory.length-1)
-					{
-						cmdHistoryIdx += 1;
-						let textBox = cmdTextBox();
-						textBox.value = cmdHistory[cmdHistoryIdx];
-					}
-					else if (cmdHistoryIdx === cmdHistory.length - 1)
-					{
-						cmdHistoryIdx += 1;
-						let textBox = cmdTextBox();
-						textBox.value = '';
-					}
+					loadNextExpression();
 					break;
 				}
 			}
 			
-			let cmdTB = cmdTextBox();
-			cmdTB.addEventListener('keydown', onKeyDown);
-			
-			let clearHistoryBtn = clearHistoryButton();
-			clearHistoryBtn.addEventListener('click', clearHistoryButton_onClick);
+			// wire up controls
+			cmdTextBox.addEventListener('keydown', onKeyDown);
+			prevExpressionButton.addEventListener('click', loadPrevExpression);
+			nextExpressionButton.addEventListener('click', loadNextExpression);
+			evaluateButton.addEventListener('click', processExpression);
+			clearHistoryButton.addEventListener('click', clearHistoryButton_onClick);
 		})();
 		</script>
 	</body>
