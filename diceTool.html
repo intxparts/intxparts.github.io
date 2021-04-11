@@ -36,7 +36,7 @@
 				<button id="clearHistoryButton">Clear History</button>
 			</p>
 		</div>
-		<div style="height:200px;width:400px;overflow:scroll;overflow-x:hidden;overflow-y:scroll;">
+		<div id="cmdHistoryScrollBoxDiv" style="height:200px;width:400px;overflow:scroll;overflow-x:hidden;overflow-y:scroll;">
 			<label id="cmdHistoryLabel"></label>
 		</div>
 		
@@ -51,6 +51,7 @@
 			let prevExpressionButton = document.getElementById('prevExpressionButton');
 			let nextExpressionButton = document.getElementById('nextExpressionButton');
 			let evaluateButton = document.getElementById('evaluateButton');
+			let cmdHistoryScrollBoxDiv = document.getElementById('cmdHistoryScrollBoxDiv');
 			
 			// data
 			let cmdHistory = [];
@@ -167,6 +168,7 @@
 					
 					cmdHistory.push(expression);
 					cmdHistoryIdx = cmdHistory.length;
+					cmdHistoryScrollBoxDiv.scrollBy(0,100);
 					
 					// clear the expression on success
 					cmdTextBox.value = '';
