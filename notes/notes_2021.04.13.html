@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Old Jim's Dev Notes</title>
+  <title>WPF Style.Triggers</title>
   <style>
     html {
       line-height: 1.5;
@@ -149,32 +149,29 @@
   <![endif]-->
 </head>
 <body>
-<h1 id="old-jims-dev-notes">Old Jim's Dev Notes</h1>
-<p><a href="index.html"><img src="images/general_store48.png" /></a></p>
-<p>Short useful notes on various programming topics. Mostly a way to help me remember things I have looked up in the past.</p>
-<ul>
-<li>2021.04.13 <a href=".\notes\notes_2021.04.13.html">WPF Style.Triggers</a></li>
-<li>2021.04.11 <a href=".\notes\notes_2021.04.11.html">HTML5 ViewPort</a></li>
-<li>2021.02.07 <a href=".\notes\notes_2021.02.07.html">Github CI slowdown on ubuntu-latest</a></li>
-<li>2021.01.29 <a href=".\notes\notes_2021.01.29.html">Moving git repos</a></li>
-<li>2021.01.24 <a href=".\notes\notes_2021.01.24.html">Env Variables</a></li>
-<li>2021.01.16 <a href=".\notes\notes_2021.01.16.html">ListViewItem not stretching to width of container</a></li>
-<li>2021.01.14 <a href=".\notes\notes_2021.01.14.html">ListView Quirks</a></li>
-<li>2021.01.11 <a href=".\notes\notes_2021.01.11.html">Failed to restore; Cycle detected</a></li>
-<li>2021.01.10 <a href=".\notes\notes_2021.01.10.html">Add reference to dll in .Net Core project</a></li>
-<li>2021.01.09 <a href=".\notes\notes_2021.01.09.html">.Net App loading dependencies from another directory</a></li>
-<li>2021.01.05 <a href=".\notes\notes_2021.01.05.html">VPN Issues</a></li>
-<li>2020.12.30 <a href=".\notes\notes_2020.12.30.html">Github SSH session setup</a></li>
-<li>2020.12.18 <a href=".\notes\notes_2020.12.18.html">WiX Installer Notes</a></li>
-<li>2020.12.17 <a href=".\notes\notes_2020.12.17.html">Rendering math equations</a></li>
-<li>2020.12.16 <a href=".\notes\notes_2020.12.16.html">Git undo last commit</a></li>
-<li>2020.02.11 <a href=".\notes\notes_2020.02.11.html">Github Actions [Windows speed up]</a></li>
-<li>2020.02.10 <a href=".\notes\notes_2020.02.10.html">Github Actions [speed up]</a></li>
-<li>2020.01.28 <a href=".\notes\notes_2020.01.28.html">Github Actions</a></li>
-<li>2019.06.04 <a href=".\notes\notes_2019.06.04.html">C++ Cross Platform Casting</a></li>
-<li>2017.09.19 <a href=".\notes\notes_2017.09.19.html">Building srlua on Windows</a></li>
-<li>2017.08.23 <a href=".\notes\notes_2017.08.23.html">Useful learning Vim links</a></li>
-<li>2017.08.19 <a href=".\notes\notes_2017.08.19.html">Useful WiX Toolset Links</a></li>
-</ul>
+<h1 id="wpf-styletriggers">WPF Style.Triggers</h1>
+<p><em>2021.04.13</em></p>
+<p>Needed to have a textblock's foreground change depending on whether the mouse was over it or if the item itself was selected in a ListView.</p>
+<pre class="xaml"><code>&lt;Style x:Key=&quot;TextBlockStyle&quot; TargetType=&quot;{x:Type TextBlock}&quot;&gt;
+    &lt;Setter Property=&quot;Foreground&quot;
+            Value=&quot;{StaticResource DefaultTextForeground}&quot; /&gt;
+    &lt;Style.Triggers&gt;
+        &lt;MultiDataTrigger&gt;
+            &lt;MultiDataTrigger.Conditions&gt;
+                &lt;Condition Binding=&quot;{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsMouseOver}&quot; Value=&quot;True&quot; /&gt;
+                &lt;Condition Binding=&quot;{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsSelected}&quot; Value=&quot;False&quot; /&gt;
+            &lt;/MultiDataTrigger.Conditions&gt;
+            &lt;Setter Property=&quot;Foreground&quot; Value=&quot;{StaticResource DesiredForeground}&quot; /&gt;
+        &lt;/MultiDataTrigger&gt;
+        &lt;DataTrigger Binding=&quot;{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}, Path=IsSelected}&quot; Value=&quot;True&quot;&gt;
+            &lt;Setter Property=&quot;Foreground&quot; Value=&quot;{StaticResource SelectedForeground}&quot; /&gt;
+        &lt;/DataTrigger&gt;
+    &lt;/Style.Triggers&gt;
+&lt;/Style&gt;
+
+
+</code></pre>
+<p>Usage:</p>
+<pre class="xaml"><code>&lt;TextBlock Text=&quot;Information&quot; Style=&quot;{StaticResource TextBlockStyle}&quot; /&gt;</code></pre>
 </body>
 </html>
