@@ -4,6 +4,7 @@
 
 Short useful notes on various programming topics. Mostly a way to help me remember things I have looked up in the past.
 
+- 2021.05.18 [WPF Cancel ListView SelectionChanged](.\notes\notes_2021.05.18.html)
 - 2021.04.13 [WPF Style.Triggers](.\notes\notes_2021.04.13.html)
 - 2021.04.11 [HTML5 ViewPort](.\notes\notes_2021.04.11.html)
 - 2021.02.07 [Github CI slowdown on ubuntu-latest](.\notes\notes_2021.02.07.html)
